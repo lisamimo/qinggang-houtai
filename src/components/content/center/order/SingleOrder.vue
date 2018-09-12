@@ -50,18 +50,37 @@
   		        </button>
   		      </div>
   		      <div class="modal-body">
-  		      	<p>用户ID： {{this.orderDetails.userId}}</p>
-  		        <p>订单号： {{this.orderDetails.id}}</p>
-  		        <p>下单时间： {{this.orderDetails.createTime}}</p>
-  		        <p>房源名称： {{this.orderDetails.houseName}}</p>
-  		        <p>入住时间： {{this.orderDetails.liveTime}}</p>
-  		        <p>离开时间： {{this.orderDetails.leaveTime}}</p>
-  		        <p>订单金额： ￥{{this.orderDetails.price}}</p>
-  		        <p>订单状态： {{this.orderDetails.status}}</p>
-  		        <p>联系人： {{this.orderDetails.linkman}}</p>
-  		        <p>手机号： {{this.orderDetails.phone}}</p>
-  		        <p>入住登记人： {{this.orderDetails.trueName}}</p>
-  		        <p>登记身份证号： {{this.orderDetails.idcard}}</p>
+  		      	<p v-if="orderDetails.userId">用户ID： {{orderDetails.userId}}</p>
+              <p v-else>用户ID：线下订单</p>
+  		        <p>订单号： {{orderDetails.id}}</p>
+  		        <p>下单时间： {{orderDetails.createTime}}</p>
+  		        <p>房源名称： {{orderDetails.houseName}}</p>
+  		        <p>入住时间： {{orderDetails.liveTime}}</p>
+  		        <p>离开时间： {{orderDetails.leaveTime}}</p>
+  		        <p>订单金额： ￥{{orderDetails.price}}</p>
+  		        <p>订单状态： {{orderDetails.status}}</p>
+  		        <p>联系人： {{orderDetails.linkman}}</p>
+  		        <p>手机号： {{orderDetails.phone}}</p>
+  		        <p>入住登记人： {{orderDetails.trueName}}</p>
+  		        <p>登记身份证号： {{orderDetails.idcard}}</p>
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                v-if="!orderDetails.userId && orderDetails.status === '已付款'"
+                @click="sendPassWord"
+              >发送开房密码</button>
+              <div v-if="orderDetails.status === '待付款'">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary alreadyPayBtn"
+                  @click="alreadyPayClick"
+                >客户已付款</button>
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  @click="alreadyCancelClick"
+                >取消该订单</button>
+              </div>
   		      </div>
   		      <div class="modal-footer">
   		        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">退出</button>
@@ -107,7 +126,7 @@ export default {
 	},
 	methods: {
     searchAll() {
-      axios.get('api/webOrder/findAll', {
+      axios.get('/webOrder/findAll', {
       params: {
         page: 0,
         size: 9
@@ -117,13 +136,15 @@ export default {
     },
     SearchAllSucc(res) {
       this.orders = res.data.obj;
-      this.totalPages = res.data.obj[0].totalPage;
+      if (res.data.obj.length) {
+        this.totalPages = res.data.obj[0].totalPage;
+      }
     },
     SearchAllFail() {
     	alert('查询出错')
     },
     searchDetails(id) {
-    	axios.get('api/webOrder/detail', {
+    	axios.get('/webOrder/detail', {
         params: {
           id: id
         }
@@ -135,10 +156,10 @@ export default {
       this.orderDetails = res.data.obj;
     },
     SearchDetailFail() {
-    	console.log('查询出错')
+    	alert('查询出错')
     },
     unPayOrder() {
-      axios.get('api/webOrder/findByStatus', {
+      axios.get('/webOrder/findByStatus', {
         params: {
           status: 'dfk',
           page: 0,
@@ -150,13 +171,15 @@ export default {
     },
     unPaySucc(res) {
       this.orders = res.data.obj;
-      this.totalPages = res.data.obj[0].totalPage;
+      if (res.data.obj.length) {
+        this.totalPages = res.data.obj[0].totalPage;
+      }
     },
     unPayFail() {
-    	console.log('查询待付款订单出错')
+    	alert('查询待付款订单出错')
     },
     alreadyPayOrder() {
-      axios.get('api/webOrder/findByStatus', {
+      axios.get('/webOrder/findByStatus', {
         params: {
           status: 'yfk',
           page: 0,
@@ -168,13 +191,15 @@ export default {
     },
     alreadyPaySucc(res) {
       this.orders = res.data.obj;
-      this.totalPages = res.data.obj[0].totalPage;
+      if (res.data.obj) {
+        this.totalPages = res.data.obj[0].totalPage;
+      }
     },
     alreadyPayFail() {
-      console.log('查询已付款订单出错')
+      alert('查询已付款订单出错')
     },
     refundOrder() {
-      axios.get('api/webOrder/findByStatus', {
+      axios.get('/webOrder/findByStatus', {
         params: {
           status: 'tk',
           page: 0,
@@ -186,13 +211,15 @@ export default {
     },
     refundSucc(res) {
       this.orders = res.data.obj;
-      this.totalPages = res.data.obj[0].totalPage;
+      if (res.data.obj.length) {
+        this.totalPages = res.data.obj[0].totalPage;
+      }
     },
     refundFail() {
       console.log('查询退款订单出错')
     },
     completeOrder() {
-      axios.get('api/webOrder/findByStatus', {
+      axios.get('/webOrder/findByStatus', {
         params: {
           status: 'ywc',
           page: 0,
@@ -204,15 +231,17 @@ export default {
     },
     completeSucc(res) {
       this.orders = res.data.obj;
-      this.totalPages = res.data.obj[0].totalPage;
+      if (res.data.obj.length) {
+        this.totalPages = res.data.obj[0].totalPage;
+      }
     },
     completeFail() {
-    	console.log('查询已完成订单出错')
+    	alert('查询已完成订单出错')
     },
     goPrePage() {
       if (this.pageNow > 1) {
         this.pageNow-=1;
-        axios.get('api/webOrder/findAll', {
+        axios.get('/webOrder/findAll', {
           params: {
             page: this.pageNow-1,
             size: 9
@@ -227,7 +256,7 @@ export default {
     goNextPage() {
       if (this.pageNow < this.totalPages) {
         this.pageNow+=1;
-        axios.get('api/webOrder/findAll', {
+        axios.get('/webOrder/findAll', {
           params: {
             page: this.pageNow-1,
             size: 9
@@ -241,7 +270,7 @@ export default {
     },
     goSelectPage() {
       if (this.pageNow <= this.totalPages && this.pageNow >= 1) {
-        axios.get('api/webOrder/findAll', {
+        axios.get('/webOrder/findAll', {
           params: {
             page: this.pageNow-1,
             size: 9
@@ -253,6 +282,59 @@ export default {
         this.pageNow = 1;
         alert('页码超出范围')
       }
+    },
+    sendPassWord() {
+      axios.get('/sms/identifying', {
+          params: {
+            id: this.orderDetails.id
+          }
+        })
+        .then(this.sendPassWordSucc)
+        .catch(this.sendPassWordFail)
+    },
+    sendPassWordSucc(res) {
+      if (res.data.code === "1") {
+        alert("发送密码成功")
+      } else if (res.data.code === "-1") {
+        alert("只有入住期间才能给客户发送密码，请客户入住期间再来发送！")
+      }
+    },
+    sendPassWordFail() {
+      alert("发送密码失败，请联系人员。")
+    },
+    alreadyPayClick() {
+      axios.get('/webOrder/modify', {
+        params: {
+            id: this.orderDetails.id,
+            status: 'yfk'
+        }
+      })
+        .then(this.alreadyPayClickSucc)
+        .catch(this.alreadyPayClickFail)
+    },
+    alreadyPayClickSucc(res) {
+      this.searchAll();
+      this.searchDetails(res.data.obj.id);
+    },
+    alreadyPayClickFail() {
+      alert('修改状态失败')
+    },
+    alreadyCancelClick() {
+      axios.get('/webOrder/modify', {
+        params: {
+            id: this.orderDetails.id,
+            status: 'yqx'
+        }
+      })
+        .then(this.CancelClickSucc)
+        .catch(this.CancelClickFail)
+    },
+    CancelClickSucc(res) {
+      this.searchAll();
+      this.searchDetails(res.data.obj.id);
+    },
+    CancelClickFail() {
+      alert('取消订单出错！')
     }
 	}
 }
@@ -306,5 +388,8 @@ export default {
     padding-top: 0;
     background-color: #5B61D2;
     color: #fff;
+  }
+  .alreadyPayBtn {
+    margin-right: 30px;
   }
 </style>

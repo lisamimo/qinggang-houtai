@@ -1,9 +1,9 @@
 module.exports = {
-  baseUrl: '/',
+  baseUrl: './',
   devServer: {
     proxy: {
       '/api': {
-        target: 'https://gb.lemengxiangju.com',
+        target: 'http://192.168.1.8:8080',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

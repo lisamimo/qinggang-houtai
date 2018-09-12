@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-let defaultName = '张明娇'
+let defaultName = '万利'
 if (localStorage.name) {
 	defaultName = localStorage.name
 }

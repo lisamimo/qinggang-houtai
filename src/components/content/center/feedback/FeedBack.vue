@@ -103,7 +103,7 @@ export default {
   	}
   },
   mounted() {
-    axios.get('api/webFeedback/select', {
+    axios.get('/webFeedback/select', {
     	params: {
     		page: 0,
         size: 9
@@ -121,7 +121,7 @@ export default {
   		console.log('查询意见反馈失败');
   	},
   	searchDetails(id) {
-    	axios.get('api/webFeedback/findOne', {
+    	axios.get('/webFeedback/findOne', {
         params: {
           id: id
         }
@@ -136,7 +136,7 @@ export default {
     	console.log('查询出错')
     },
     submitHandle(id) {
-      axios.get('api/webFeedback/update', {
+      axios.get('/webFeedback/update', {
         params: {
           id: id,
           remark: this.handleDesc
@@ -154,7 +154,7 @@ export default {
     goPrePage() {
       if (this.pageNow > 1) {
         this.pageNow-=1;
-        axios.get('api/webFeedback/select', {
+        axios.get('/webFeedback/select', {
           params: {
             page: this.pageNow-1,
             size: 9
@@ -169,7 +169,7 @@ export default {
     goNextPage() {
       if (this.pageNow < this.totalPages) {
         this.pageNow+=1;
-        axios.get('api/webFeedback/select', {
+        axios.get('/webFeedback/select', {
           params: {
             page: this.pageNow-1,
             size: 9
@@ -183,7 +183,7 @@ export default {
     },
     goSelectPage() {
       if (this.pageNow <= this.totalPages && this.pageNow >= 1) {
-        axios.get('api/webFeedback/select', {
+        axios.get('/webFeedback/select', {
           params: {
             page: this.pageNow-1,
             size: 9

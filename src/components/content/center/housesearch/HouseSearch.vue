@@ -67,7 +67,7 @@ export default {
   },
   methods: {
   	houseSearch() {
-      axios.get('api/webHouse/findAll', {
+      axios.get('/webHouse/findAll', {
       params: {
         page: 0,
         size: 8
@@ -81,10 +81,10 @@ export default {
       this.totalPages = res.data.obj[0].totalPage;
   	},
   	houseSearchFail() {
-  		console.log('查询出错')
+  		alert('查询出错, 请联系开发人员！')
   	},
   	searchByTime() {
-  		axios.get('api/webHouse/findByTime', {
+  		axios.get('/webHouse/findByTime', {
 	      params: {
 	        page: 0,
 	        size: 8,
@@ -108,7 +108,7 @@ export default {
     goPrePage() {
       if (this.pageNow > 1) {
         this.pageNow-=1;
-        axios.get('api/webHouse/findByTime', {
+        axios.get('/webHouse/findByTime', {
           params: {
             page: this.pageNow-1,
             size: 8,
@@ -125,7 +125,7 @@ export default {
     goNextPage() {
       if (this.pageNow < this.totalPages) {
         this.pageNow+=1;
-        axios.get('api/webHouse/findByTime', {
+        axios.get('/webHouse/findByTime', {
           params: {
             page: this.pageNow-1,
             size: 8,
@@ -141,7 +141,7 @@ export default {
     },
     goSelectPage() {
       if (this.pageNow <= this.totalPages && this.pageNow >= 1) {
-        axios.get('api/webHouse/findByTime', {
+        axios.get('/webHouse/findByTime', {
           params: {
             page: this.pageNow-1,
             size: 8

@@ -43,10 +43,28 @@
   	  </div>
   	  <div class="form-group">
   	    <label for="idCard">身份证号：</label>
-  	    <input type="text" id="liveMan" class="form-control" placeholder="请填写正确身份证号码" v-model="idcard"/>
+  	    <input type="text" id="idCard" class="form-control" placeholder="请填写正确身份证号码" v-model="idcard"/>
   	  </div>
     </div>
-	  <div class="priceDesc">房费总额： <span class="priceNum">￥{{price*day}}</span></div>
+    <div class="form-group">
+      <label for="orderStatus">订单状态</label>
+      <select class="form-control" id="orderStatus" v-model="status">
+        <option value="yfk">已付款</option>
+        <option value="dfk">未付款</option>
+      </select>
+    </div>
+    <div class="priceWrapper">
+      <div class="priceDesc">系统计算房费总额： <span class="priceNum">￥{{price*day}}</span></div>
+      <div class="form-group row actualPriceWrapper">
+        <label for="priceInput" class="col-form-label actualPrice">实际房费总额： </label>
+        <input
+          type="number"
+          id="priceInput"
+          class="form-control"
+          placeholder="请输入实际总房价(房价x入住天数)"
+          v-model="actualTotalPrice" />
+      </div>
+    </div>
   	<button class="btn backBtn" type="button" @click="backToHouseDetail">取消</button>
   	<button class="btn submitBtn" type="button" @click="submitOrder">提交订单</button>
   </div>
@@ -69,7 +87,9 @@ export default {
       trueName: '',
       idcard: '',
       day: 1,
-      price: 0
+      price: 0,
+      status: '',
+      actualTotalPrice: 0
   	}
   },
   mounted() {
@@ -81,6 +101,7 @@ export default {
         var day = this.common.countDayMount(newLiveTime, this.leaveTime);
         if ( day > 0 ) {
           this.day = day;
+          this.actualTotalPrice = this.price*this.day;
         } else {
           alert('时间选择错误！入住时间必须早于离开时间！')
         }
@@ -91,6 +112,7 @@ export default {
         var day = this.common.countDayMount(this.liveTime, newLeaveTime);
         if ( day > 0 ) {
           this.day = day;
+          this.actualTotalPrice = this.price*this.day;
         }  else {
           alert('时间选择错误！入住时间必须早于离开时间！')
         }
@@ -110,6 +132,7 @@ export default {
       this.leaveTime = leaveTime;
       this.houseDetail = houseDetail;
       this.price = houseDetail.price;
+      this.actualTotalPrice = this.price*this.day;
   	},
   	backToHouseDetail() {
   		this.$router.push({
@@ -134,12 +157,14 @@ export default {
         alert('身份证号码格式错误！')
       } else if ( this.liveTime === '' || this.leaveTime === '') {
         alert('入住时间和离开时间不能为空')
+      } else if ( this.status === '') {
+        alert('订单状态不能为空，请选择订单状态！')
       } else {
         var day = this.common.countDayMount(this.liveTime, this.leaveTime);
         this.day = day;
-    		axios.post('api/webOrder/add', {
+    		axios.post('/webOrder/add', {
           houseId: this.houseId,
-          price: this.price*day, //单价乘以入住天数
+          price: this.actualTotalPrice,
           liveNum: this.liveNum, 
           liveTime: this.liveTime, 
           leaveTime: this.leaveTime, 
@@ -147,6 +172,7 @@ export default {
           phone: this.phone,  
           trueName: this.trueName, 
           idcard: this.idcard,
+          status: this.status
   	    })
         .then(this.submitOrderSucc)
         .catch(this.submitOrderFail)
@@ -161,7 +187,7 @@ export default {
       this.idcard = '';
   	},
   	submitOrderFail() {
-  		console.log('提交订单失败')
+  		alert('提交订单失败')
   	}
   }
 }
@@ -238,10 +264,24 @@ input {
   font-size: 14px;
 }
 .priceDesc {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 .priceNum {
   color: #9E0101
+}
+#orderStatus {
+  width: 420px;
+}
+.actualPriceWrapper {
+  margin-top: 20px;
+}
+.actualPrice {
+  margin-left: 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+#priceInput {
+  width: 260px;
 }
 </style>

@@ -194,7 +194,7 @@ export default {
 	  }
 	},
 	mounted() {
-    axios.get('api/webWhole/findAll', {
+    axios.get('/webWhole/findAll', {
     	params: {
     		page: 0,
         size: 9
@@ -211,7 +211,7 @@ export default {
       console.log('查询所有订单失败')
 		},
 		unhandled() {
-      axios.get('api/webWhole/select', {
+      axios.get('/webWhole/select', {
         params: {
           status: '0',
           page: 0,
@@ -225,10 +225,10 @@ export default {
 			this.teamOrders = res.data.obj
 		},
 		unhandledFail() {
-			console.log('查询出错')
+			alert('查询出错')
 		},
 		receivedOrder() {
-      axios.get('api/webWhole/select', {
+      axios.get('/webWhole/select', {
         params: {
           status: 'true',
           page: 0,
@@ -245,7 +245,7 @@ export default {
       console.log('查询接单失败')
 		},
 		refusedOrder() {
-      axios.get('api/webWhole/select', {
+      axios.get('/webWhole/select', {
         params: {
           status: 'false',
           page: 0,
@@ -263,7 +263,7 @@ export default {
 		},
 		orderDetail(id) {
 			this.id = id;
-			axios.get('api/webWhole/findOne', {
+			axios.get('/webWhole/findOne', {
         params: {
           id: id,
         }
@@ -289,7 +289,7 @@ export default {
 		},
 		submitOrder() {
 			if (this.orderDesc !== '') {
-	      axios.get('api/webWhole/modify', {
+	      axios.get('/webWhole/modify', {
 	        params: {
 	        	id: this.id,
 	          status: 'true',
@@ -319,7 +319,7 @@ export default {
 		},
 		refuseOrder() {
 			if (this.orderDesc !== '') {
-				axios.get('api/webWhole/modify', {
+				axios.get('/webWhole/modify', {
 	        params: {
 	        	id: this.id,
 	          status: 'false',
@@ -342,7 +342,7 @@ export default {
 		goPrePage() {
       if (this.pageNow > 1) {
         this.pageNow-=1;
-        axios.get('api/webWhole/findAll', {
+        axios.get('/webWhole/findAll', {
           params: {
             page: this.pageNow-1,
             size: 9
@@ -357,7 +357,7 @@ export default {
     goNextPage() {
       if (this.pageNow < this.totalPages) {
         this.pageNow+=1;
-        axios.get('api/webWhole/findAll', {
+        axios.get('/webWhole/findAll', {
           params: {
             page: this.pageNow-1,
             size: 9
@@ -371,7 +371,7 @@ export default {
     },
     goSelectPage() {
       if (this.pageNow <= this.totalPages && this.pageNow >= 1) {
-        axios.get('api/webWhole/findAll', {
+        axios.get('/webWhole/findAll', {
           params: {
             page: this.pageNow-1,
             size: 9

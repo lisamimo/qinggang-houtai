@@ -9,6 +9,7 @@
       <ul class="sider-item-list nav collapse" style="height: 0px;" id="orderManage">
         <router-link tag="li" to="/singleorder"><button class="secondTitle">个人预订</button></router-link>
         <router-link tag="li" to="/teamorder"><button class="secondTitle">团体预订</button></router-link>
+        <router-link tag="li" to="/orderstat"><button class="secondTitle">订单统计</button></router-link>
       </ul>
       <li data-target="#houseManage" data-toggle="collapse" class="sider-item list-unstyled">
         <button class="firstTitle">房源管理</button>
@@ -57,7 +58,7 @@ export default {
 <style scoped>
   #nav{
     width: 130px;
-    height: 883px;
+    height: 949px;
     margin-right: 10px;
     background-color: #3c4145;
   }

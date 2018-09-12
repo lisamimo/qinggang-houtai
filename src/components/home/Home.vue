@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     Login() {
-      axios.get('api/employ/login', {
+      axios.get('/employ/login', {
         params: {
           account: this.account,
           pwd: this.pwd
